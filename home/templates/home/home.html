@@ -1,0 +1,243 @@
+{% verbatim %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRASH REPORT | ENRICO FULGENZI RACING</title>
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.min.css" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/egosta" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <style>
+    html,
+    body,
+    div {
+      font-family: 'EGOSTA', sans-serif !important;
+    }
+
+    .pantone .v-text-field--outlined:not(.v-input--is-focused):not(.v-input--has-state)>.v-input__control>.v-input__slot fieldset {
+      border-color: #f7a40f;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <v-app dark>
+      <v-container>
+        <v-row>
+          <v-col cols="12" sm="12" md="12" class="d-flex justify-center align-center mt-5">
+            <v-img src="/static/home/images/logo.png" width="250" height="130" contain></v-img>
+          </v-col>
+        </v-row>
+        <v-card class="mt-10 mb-10" outlined>
+          <v-card-title>
+            <v-row>
+              <v-col cols="12" sm="12" md="12">
+                <h3 style="text-align: center;">- CRASH REPORT -</h3>
+              </v-col>
+            </v-row>
+          </v-card-title>
+          <v-card-text>
+            <v-form ref="form">
+              <v-row>
+                <v-col cols="12" sm="4" md="4" :class="{ 'pantone': form.event }">
+                  <v-text-field v-model="form.event" label="EVENT" outlined shaped dense clearable hide-details
+                    :color="setPantone(form.event)"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="4" md="4" :class="{ 'pantone': form.driver }">
+                  <v-text-field v-model="form.driver" label="DRIVER" outlined shaped dense clearable
+                    hide-details :color="setPantone(form.driver)"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="4" md="4" :class="{ 'pantone': form.date }">
+                  <v-text-field v-model="form.date" label="DATE" outlined shaped dense clearable hide-details
+                    :color="setPantone(form.date)"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="6" :class="{ 'pantone': form.porsche }">
+                  <v-text-field v-model="form.porsche" label="PORSCHE" outlined shaped dense clearable
+                    hide-details :color="setPantone(form.porsche)"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="6" :class="{ 'pantone': form.sign }">
+                  <v-text-field v-model="form.sign" label="SIGN" outlined shaped dense clearable hide-details
+                    :color="setPantone(form.sign)"></v-text-field>
+                </v-col>
+              </v-row>
+
+
+              <br>
+              <v-divider class="my-4"></v-divider>
+
+
+              <v-row>
+                <v-col cols="12" sm="12" md="12">
+                  <v-card class="pa-5" outlined>
+
+                    <v-row>
+                      <v-col cols="12" sm="12" md="12">
+                        <v-expansion-panels style="border-color: #f7a40f;" v-model="expandedPanels" multiple>
+                          <v-expansion-panel v-for="(group, index) in form.imageGroups" :key="index">
+                            <v-expansion-panel-header>
+                              <h3 :style="group.title ? 'color: #f7a40f;' : 'color: white;'">
+                                {{ group.title || `Group ${index + 1}` }}
+                              </h3>
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                              <v-col cols="12" sm="12" md="12" :class="{ 'pantone': group.title }" class="pl-0 pr-0">
+                                <v-text-field outlined dense clearable hide-details
+                                  :color="setPantone(group.title)" v-model="group.title"
+                                  label="Group Title"></v-text-field>
+
+                              </v-col>
+                              <v-col cols="12" sm="12" md="12" :class="{ 'pantone': group.notes }" class="pl-0 pr-0">
+                                <v-textarea outlined dense clearable hide-details :color="setPantone(group.notes)"
+                                  v-model="group.notes" label="Notes" rows="3"></v-textarea>
+
+                              </v-col>
+                              <v-col cols="12" sm="12" md="12" :class="{ 'pantone': group.images.length!=0 }"
+                                class="pl-0 pr-0">
+                                <v-file-input outlined dense clearable hide-details
+                                  :color="setPantone(group.images)" v-model="group.images" label="Select Images"
+                                  multiple accept="image/*"></v-file-input>
+                              </v-col>
+                              <v-col cols="12" sm="12" md="12">
+                                <div style="text-align: right;" class="pl-0 pr-0">
+                                  <v-btn color="red" outlined @click="removeImageGroup(index)">Remove Group</v-btn>
+                                </div>
+                              </v-col>
+
+                            </v-expansion-panel-content>
+                          </v-expansion-panel>
+                        </v-expansion-panels>
+                      </v-col>
+                    </v-row>
+                    <v-divider class="my-4"></v-divider>
+                    <v-btn color="primary" outlined @click="addImageGroup">Add Group</v-btn>
+                  </v-card>
+                </v-col>
+              </v-row>
+
+              <v-row>
+                <v-col cols="12" sm="12" md="12" class="d-flex justify-center align-center">
+                  <v-btn outlined color="#f7a40f" @click="submitForm">
+                    Build PDF
+                  </v-btn>
+                </v-col>
+              </v-row>
+
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-container>
+      <v-snackbar v-model="snackbar" :timeout="3000" :color="snackbarColor" class="pa-5">
+        {{ snackbarMessage }}
+      </v-snackbar>
+    </v-app>
+  </div>
+
+  <script>
+    new Vue({
+      el: '#app',
+      vuetify: new Vuetify({
+        theme: {
+          dark: true
+        }
+      }),
+      data: () => ({
+        form: {
+          event: '',
+          driver: '',
+          date: '',
+          porsche: '',
+          sign: '',
+          imageGroups: [{
+            title: '',
+            notes: '',
+            images: []
+          }],
+        },
+        expandedPanels: [0],
+        snackbar: false,
+        snackbarMessage: '',
+        snackbarColor: 'red',
+      }),
+      methods: {
+        addImageGroup() {
+          this.form.imageGroups.push({
+            title: '',
+            notes: '',
+            images: []
+          });
+          this.expandedPanels.push(this.form.imageGroups.length - 1)
+        },
+        removeImageGroup(index) {
+          if (this.form.imageGroups.length > 1) {
+            this.form.imageGroups.splice(index, 1);
+          } else {
+            this.snackbarColor = 'red';
+            this.snackbarMessage = 'At least one image group is required.';
+            this.snackbar = true;
+          }
+        },
+        async submitForm() {
+          if (this.$refs.form.validate()) {
+            try {
+              const imageGroups = await Promise.all(this.form.imageGroups.map(async group => ({
+                title: group.title,
+                notes: group.notes,
+                images: await Promise.all(group.images.map(image => this.convertToBase64(image)))
+              })));
+
+              const eventData = {
+                event: this.form.event,
+                driver: this.form.driver,
+                date: this.form.date,
+                porsche: this.form.porsche,
+                sign: this.form.sign,
+                image_groups: imageGroups,
+              };
+
+              console.log(eventData);
+
+              const response = await axios.post('/api/crash/report/', eventData, {
+                headers: {
+                  'Content-Type': 'application/json',
+                }
+              });
+              console.log('Response:', response.data);
+              this.snackbarColor = 'green';
+              this.snackbarMessage = 'Report submitted successfully!';
+              this.snackbar = true;
+
+            } catch (error) {
+              console.error('Error submitting report:', error);
+              this.snackbarColor = 'red';
+              this.snackbarMessage = 'Failed to submit report.';
+              this.snackbar = true;
+            }
+          }
+        },
+        convertToBase64(file) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+          });
+        },
+        setPantone(field) {
+          if (field === '' || field === null) {
+            return 'white';
+          }
+          return '#f7a40f';
+        },
+      }
+    });
+  </script>
+</body>
+
+</html>
+{% endverbatim %}
