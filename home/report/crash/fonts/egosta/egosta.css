@@ -1,0 +1,36 @@
+@font-face {
+    font-family: 'EGOSTA';
+    font-style: normal;
+    font-weight: 400;
+    src: local('EGOSTA'), url('Egosta-Rp6Kv.woff') format('woff');
+}
+@font-face {
+    font-family: 'EGOSTA';
+    font-style: normal;
+    font-weight: 400;
+    src: local('EGOSTA'), url('EgostaItalic-8MP8Z.woff') format('woff');
+}
+@font-face {
+    font-family: 'EGOSTA';
+    font-style: normal;
+    font-weight: 400;
+    src: local('EGOSTA'), url('EgostaLightItalic-rgB28.woff') format('woff');
+}
+@font-face {
+    font-family: 'EGOSTA';
+    font-style: normal;
+    font-weight: 300;
+    src: local('EGOSTA'), url('EgostaLight-Yz63y.woff') format('woff');
+}
+@font-face {
+    font-family: 'EGOSTA';
+    font-style: normal;
+    font-weight: 700;
+    src: local('EGOSTA'), url('EgostaBold-1GKPj.woff') format('woff');
+}
+@font-face {
+    font-family: 'EGOSTA';
+    font-style: normal;
+    font-weight: 700;
+    src: local('EGOSTA'), url('EgostaBoldItalic-BWEBG.woff') format('woff');
+}

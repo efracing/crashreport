@@ -6,6 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CRASH REPORT | ENRICO FULGENZI RACING</title>
+  <link rel="icon" href="/static/home/images/favicon.ico" type="image/x-icon">
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.min.css" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/egosta" rel="stylesheet">
@@ -122,7 +123,7 @@
 
               <v-row>
                 <v-col cols="12" sm="12" md="12" class="d-flex justify-center align-center">
-                  <v-btn outlined color="#f7a40f" @click="submitForm">
+                  <v-btn outlined color="#f7a40f" @click="submitForm" :loading=loading>
                     Build PDF
                   </v-btn>
                 </v-col>
@@ -163,6 +164,7 @@
         snackbar: false,
         snackbarMessage: '',
         snackbarColor: 'red',
+        loading: false,
       }),
       methods: {
         addImageGroup() {
@@ -183,6 +185,7 @@
           }
         },
         async submitForm() {
+          this.loading = true;
           if (this.$refs.form.validate()) {
             try {
               const imageGroups = await Promise.all(this.form.imageGroups.map(async group => ({
@@ -190,7 +193,7 @@
                 notes: group.notes,
                 images: await Promise.all(group.images.map(image => this.convertToBase64(image)))
               })));
-
+        
               const eventData = {
                 event: this.form.event,
                 driver: this.form.driver,
@@ -199,17 +202,35 @@
                 sign: this.form.sign,
                 image_groups: imageGroups,
               };
-
+        
               console.log(eventData);
-
+        
               const response = await axios.post('/api/crash/report/', eventData, {
                 headers: {
                   'Content-Type': 'application/json',
-                }
+                },
+                // Set responseType to 'blob' to receive binary data
+                responseType: 'blob'
               });
-              console.log('Response:', response.data);
+        
+              // Create a Blob object from the binary data received
+              const blob = new Blob([response.data], { type: 'application/pdf' });
+        
+              // Create a temporary URL for the Blob object
+              const url = window.URL.createObjectURL(blob);
+        
+              // Create a link element and trigger a download
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `${this.form.event},${this.form.driver},${this.form.date},${this.form.porsche},${this.form.sign},.pdf`;
+              document.body.appendChild(link);
+              link.click();
+        
+              // Cleanup
+              window.URL.revokeObjectURL(url);
+        
               this.snackbarColor = 'green';
-              this.snackbarMessage = 'Report submitted successfully!';
+              this.snackbarMessage = 'Report built successfully!';
               this.snackbar = true;
 
             } catch (error) {
@@ -217,9 +238,11 @@
               this.snackbarColor = 'red';
               this.snackbarMessage = 'Failed to submit report.';
               this.snackbar = true;
+            } finally {
+              this.loading = false;
             }
           }
-        },
+        },        
         convertToBase64(file) {
           return new Promise((resolve, reject) => {
             const reader = new FileReader();

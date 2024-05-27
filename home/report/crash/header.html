@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ EVENT }} | CRASH REPORT</title>
+  <style>
+    html,
+    body {
+      font-family: 'EGOSTA', sans-serif;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .half_col {
+      width: 50%;
+    }
+
+    .firma-span {
+      min-width: 400px;
+      border: 0px solid white;
+    }
+
+    .firma-table {
+      margin-left: auto;
+      margin-right: 0;
+    }
+
+    .firma-table td {
+      text-align: left;
+    }
+  </style>
+  <link href="fonts/egosta/egosta.css" rel="stylesheet">
+  <link href="fonts/gloriousity/gloriousity.css" rel="stylesheet">
+</head>
+
+<body>
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <td colspan="3">
+            <h1 style="margin: 0px; margin-top: 5px;">- CRASH REPORT -</h1>
+          </td>
+        </tr>
+        <tr>
+          <th rowspan="2" style="text-align: center;">
+            <img src="logo.png" style="width: 250px; height: auto;">
+            <!-- <h2>CRASH PHOTO REPORT</h2> -->
+          </th>
+          <td>
+            <p>
+            <div style="margin-bottom: 5px;"><strong>EVENT</strong></div>{{ event }}</p>
+          </td>
+          <td>
+            <p>
+            <div style="margin-bottom: 5px;"><strong>DRIVER</strong></div>{{ driver }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>
+            <div style="margin-bottom: 5px;"><strong>DATE</strong></div>{{ date }}</p>
+          </td>
+          <td>
+            <p>
+            <div style="margin-bottom: 5px;"><strong>PORSCHE</strong></div>{{ porsche }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3" style="border: 0px solid white;"></td>
+        </tr>
+      </thead>
+    </table>
+
+  </div>
+
+</body>
+
+</html>

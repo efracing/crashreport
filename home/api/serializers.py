@@ -1,14 +1,10 @@
 from rest_framework import serializers
 
 
-class ImageSerializer(serializers.Serializer):
-    image = serializers.CharField(allow_blank=True, allow_null=True)
-
-
 class ImageGroupSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255, allow_blank=True, allow_null=True)
     notes = serializers.CharField(allow_blank=True, allow_null=True)
-    images = ImageSerializer(many=True)
+    images = serializers.ListSerializer(child=serializers.CharField())
 
 
 class CrashReportSerializer(serializers.Serializer):

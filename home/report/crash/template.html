@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ EVENT }} | CRASH REPORT</title>
+  <style>
+    html,
+    body {
+      font-family: 'EGOSTA', sans-serif;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .half_col {
+      width: 50%;
+    }
+
+    .firma-span {
+      min-width: 400px;
+      border: 0px solid white;
+    }
+
+    .firma-table {
+      margin-left: auto;
+      margin-right: 0;
+    }
+
+    .firma-table td {
+      text-align: left;
+    }
+  </style>
+  <link href="fonts/egosta/egosta.css" rel="stylesheet">
+  <link href="fonts/gloriousity/gloriousity.css" rel="stylesheet">
+</head>
+
+<body>
+  <div>
+
+    {% set outer_index = 0 %}
+    {% for group in image_groups %}
+    {% set outer_index = loop.index %}
+
+    {% if group.mimages|length > 6 %}
+    <table style="page-break-after: always !important;">
+    {% elif outer_index != image_groups|length %}
+    <table style="page-break-after: always !important;">
+    {% else %}
+    <table>
+    {% endif %}
+      <tbody>
+
+        {% for i in range(0, group.mimages|length, 2) %}
+
+          {% if i == 0 %}
+          <tr style="height: 34px;">
+            <td colspan="6" style="text-align: left;">
+              <b>{{ group.title }}</b>
+            </td>
+          </tr>
+          {% endif %}
+
+          <tr>
+            {% if not group.mimages[i].image %}
+              <td colspan="3" style="width: 50%; height: 280px; max-height: 280px; border-color: white;">
+              </td>
+            {% else %}
+              <td colspan="3" style="width: 50%; height: 280px; max-height: 280px;">
+                <img style="max-width: 100%; max-height: 100%; height: auto;" src="{{ group.mimages[i].image }}">
+              </td>
+            {% endif %}
+
+            {% if not group.mimages[i+1].image %}
+              <td colspan="3" style="width: 50%; height: 280px; max-height: 280px; border-color: white;">
+              </td>
+            {% else %}
+              <td colspan="3" style="width: 50%; height: 280px; max-height: 280px;">
+                <img style="max-width: 100%; max-height: 100%; height: auto;" src="{{ group.mimages[i+1].image }}">
+              </td>
+            {% endif %}
+          </tr>
+
+          {% if i+1 == group.mimages|length %}
+            </tbody>
+          </table>
+
+          {% elif group.mimages[i+1].counter % 6 == 0 %}
+            </tbody>
+          </table>
+
+            {% if group.mimages|length - i > 6 %}
+            <table style="page-break-after: always !important;">
+            {% elif outer_index != image_groups|length %}
+            <table style="page-break-after: always !important;">
+            {% else %}
+            <table>
+              <tbody>
+                <tr style="height: 34px;">
+                  <td colspan="6" style="text-align: left;">
+                    <b>{{ group.title }}</b>
+                  </td>
+                </tr>
+            {% endif %}
+
+          {% endif %}
+
+        {% endfor %}
+
+        {% if group.notes %}
+        <tr>
+          <tr>
+            <td colspan="6" style="border-left: 1px solid white; border-right: 1px solid white;">
+            </td>
+          </tr>
+          <td colspan="6" style="height: 100px; max-height: 100px; text-align: justify; vertical-align: top;">
+            {{ group.notes }}
+          </td>
+        </tr>
+        {% endif %}
+
+      </tbody>
+    </table>
+    {% endfor %}
+
+    <table class="firma-table">
+      <tbody>
+        <tr>
+          <td colspan="6" style="border: 0px solid white;"></td>
+        </tr>
+        <tr>
+          <td class="firma-span"></td>
+          <td><b>Firma</b></td>
+        </tr>
+        <tr>
+          <td class="firma-span"></td>
+          <td style="text-align: center; font-size: 30px;">
+          <span style="font-family: 'Gloriousity One', sans-serif;">
+            {{ sign }}
+          </span></td>
+        </tr>
+      </tbody>
+    </table>
+
+
+  </div>
+
+</body>
+
+</html>
