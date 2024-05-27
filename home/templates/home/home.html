@@ -231,7 +231,7 @@
                 // Create a link element and trigger a download
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = `${this.form.event},${this.form.driver},${this.form.date},${this.form.porsche},${this.form.sign},.pdf`;
+                link.download = `${this.form.event},${this.form.driver},${this.form.date},${this.form.porsche},${this.form.sign}.pdf`;
                 document.body.appendChild(link);
                 link.click();
               } else {

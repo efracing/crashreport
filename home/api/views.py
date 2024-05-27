@@ -58,7 +58,7 @@ class BuildPdfAPIView(APIView):
             'footer-html': 'home/report/crash/footer.html',
             'enable-local-file-access': '',
         }
-        pdf = pdfkit.from_string(content, options=options, verbose=True)
+        pdf = pdfkit.from_string(content, options=options)
 
         buffer = BytesIO(pdf)
         buffer.seek(0)
