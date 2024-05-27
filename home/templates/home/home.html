@@ -121,7 +121,7 @@
                 </v-col>
               </v-row>
 
-              <v-row>
+              <v-row class="pb-1">
                 <v-col cols="12" sm="12" md="12" class="d-flex justify-center align-center">
                   <v-btn outlined color="#f7a40f" @click="submitForm" :loading=loading>
                     Build PDF
@@ -133,6 +133,7 @@
                   color="#f7a40f"
                   hide-details
                   class="ml-auto"
+                  :disabled="loading"
                 ></v-switch>
               </v-row>
 
