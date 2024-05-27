@@ -38,8 +38,6 @@ class BuildPdfAPIView(APIView):
             if not group['notes'].strip():
                 data['image_groups'][index]['notes'] = None
 
-        print(data)
-
         with open('home/report/crash/header.html', 'r') as f:
             content = f.read()
         template = Template(content)
@@ -60,7 +58,7 @@ class BuildPdfAPIView(APIView):
             'footer-html': 'home/report/crash/footer.html',
             'enable-local-file-access': '',
         }
-        pdf = pdfkit.from_string(content, options=options)
+        pdf = pdfkit.from_string(content, options=options, verbose=True)
 
         buffer = BytesIO(pdf)
         buffer.seek(0)

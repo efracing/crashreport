@@ -10,9 +10,9 @@
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.min.css" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/egosta" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.5.10/dist/vuetify.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     html,
     body,
@@ -47,23 +47,23 @@
             <v-form ref="form">
               <v-row>
                 <v-col cols="12" sm="4" md="4" :class="{ 'pantone': form.event }">
-                  <v-text-field v-model="form.event" label="EVENT" outlined shaped dense clearable hide-details
+                  <v-text-field v-model="form.event" label="EVENT" outlined shaped dense clearable hide-details tabindex="1"
                     :color="setPantone(form.event)"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4" md="4" :class="{ 'pantone': form.driver }">
-                  <v-text-field v-model="form.driver" label="DRIVER" outlined shaped dense clearable
+                  <v-text-field v-model="form.driver" label="DRIVER" outlined shaped dense clearable tabindex="2"
                     hide-details :color="setPantone(form.driver)"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="4" md="4" :class="{ 'pantone': form.date }">
-                  <v-text-field v-model="form.date" label="DATE" outlined shaped dense clearable hide-details
+                  <v-text-field v-model="form.date" label="DATE" outlined shaped dense clearable hide-details tabindex="3"
                     :color="setPantone(form.date)"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="6" :class="{ 'pantone': form.porsche }">
-                  <v-text-field v-model="form.porsche" label="PORSCHE" outlined shaped dense clearable
+                  <v-text-field v-model="form.porsche" label="PORSCHE" outlined shaped dense clearable tabindex="4"
                     hide-details :color="setPantone(form.porsche)"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="6" :class="{ 'pantone': form.sign }">
-                  <v-text-field v-model="form.sign" label="SIGN" outlined shaped dense clearable hide-details
+                  <v-text-field v-model="form.sign" label="SIGN" outlined shaped dense clearable hide-details tabindex="5"
                     :color="setPantone(form.sign)"></v-text-field>
                 </v-col>
               </v-row>
@@ -127,6 +127,13 @@
                     Build PDF
                   </v-btn>
                 </v-col>
+                <v-switch
+                  v-model="stream"
+                  label="Stream"
+                  color="#f7a40f"
+                  hide-details
+                  class="ml-auto"
+                ></v-switch>
               </v-row>
 
             </v-form>
@@ -165,6 +172,7 @@
         snackbarMessage: '',
         snackbarColor: 'red',
         loading: false,
+        stream: false,
       }),
       methods: {
         addImageGroup() {
@@ -218,17 +226,22 @@
         
               // Create a temporary URL for the Blob object
               const url = window.URL.createObjectURL(blob);
-        
-              // Create a link element and trigger a download
-              const link = document.createElement('a');
-              link.href = url;
-              link.download = `${this.form.event},${this.form.driver},${this.form.date},${this.form.porsche},${this.form.sign},.pdf`;
-              document.body.appendChild(link);
-              link.click();
+
+              if (!this.stream) {
+                // Create a link element and trigger a download
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${this.form.event},${this.form.driver},${this.form.date},${this.form.porsche},${this.form.sign},.pdf`;
+                document.body.appendChild(link);
+                link.click();
+              } else {
+                // Open the PDF in a new tab/window
+                window.open(url, '_blank');
+              }
         
               // Cleanup
               window.URL.revokeObjectURL(url);
-        
+
               this.snackbarColor = 'green';
               this.snackbarMessage = 'Report built successfully!';
               this.snackbar = true;
