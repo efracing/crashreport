@@ -77,19 +77,19 @@
 
           <tr>
             {% if not group.mimages[i].image %}
-              <td colspan="3" style="width: 50%; height: 245px; max-height: 245px; border-color: white;">
+              <td colspan="3" style="width: 50%; height: 240px; max-height: 240px; border-color: white;">
               </td>
             {% else %}
-              <td colspan="3" style="width: 50%; height: 245px; max-height: 245px;">
+              <td colspan="3" style="width: 50%; height: 240px; max-height: 240px;">
                 <img style="max-width: 100%; max-height: 100%; height: auto;" src="{{ group.mimages[i].image }}">
               </td>
             {% endif %}
 
             {% if not group.mimages[i+1].image %}
-              <td colspan="3" style="width: 50%; height: 245px; max-height: 245px; border-color: white;">
+              <td colspan="3" style="width: 50%; height: 240px; max-height: 240px; border-color: white;">
               </td>
             {% else %}
-              <td colspan="3" style="width: 50%; height: 245px; max-height: 245px;">
+              <td colspan="3" style="width: 50%; height: 240px; max-height: 240px;">
                 <img style="max-width: 100%; max-height: 100%; height: auto;" src="{{ group.mimages[i+1].image }}">
               </td>
             {% endif %}
@@ -106,7 +106,7 @@
               </td>
             </tr>
             <tr>
-              <td colspan="6" style="height: 30px; max-height: 30px; text-align: justify; vertical-align: top;">
+              <td colspan="6" style="height: 25px; max-height: 25px; text-align: justify; vertical-align: top;">
                 {{ group.notes | replace('\n', '<br>' | safe) }}
               </td>
             </tr>
@@ -140,7 +140,7 @@
           </td>
         </tr>
         <tr>
-          <td colspan="6" style="height: 30px; max-height: 30px; text-align: justify; vertical-align: top;">
+          <td colspan="6" style="height: 25px; max-height: 25px; text-align: justify; vertical-align: top;">
             {{ group.notes | replace('\n', '<br>' | safe) }}
           </td>
         </tr>
