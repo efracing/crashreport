@@ -65,7 +65,7 @@
     {% endif %}
       <tbody>
 
-        {% for i in range(0, group.mimages|length, 2) %}
+          {% for i in range(0, group.mimages|length, 2) %}
 
           {% if i == 0 %}
           <tr style="height: 34px;">
@@ -77,19 +77,19 @@
 
           <tr>
             {% if not group.mimages[i].image %}
-              <td colspan="3" style="width: 50%; height: 280px; max-height: 280px; border-color: white;">
+              <td colspan="3" style="width: 50%; height: 250px; max-height: 250px; border-color: white;">
               </td>
             {% else %}
-              <td colspan="3" style="width: 50%; height: 280px; max-height: 280px;">
+              <td colspan="3" style="width: 50%; height: 250px; max-height: 250px;">
                 <img style="max-width: 100%; max-height: 100%; height: auto;" src="{{ group.mimages[i].image }}">
               </td>
             {% endif %}
 
             {% if not group.mimages[i+1].image %}
-              <td colspan="3" style="width: 50%; height: 280px; max-height: 280px; border-color: white;">
+              <td colspan="3" style="width: 50%; height: 250px; max-height: 250px; border-color: white;">
               </td>
             {% else %}
-              <td colspan="3" style="width: 50%; height: 280px; max-height: 280px;">
+              <td colspan="3" style="width: 50%; height: 250px; max-height: 250px;">
                 <img style="max-width: 100%; max-height: 100%; height: auto;" src="{{ group.mimages[i+1].image }}">
               </td>
             {% endif %}
@@ -100,6 +100,17 @@
           </table>
 
           {% elif group.mimages[i+1].counter % 6 == 0 %}
+            {% if group.notes %}
+            <tr>
+              <td colspan="6" style="height: 1px; max-height: 1px; border-left: 0px; border-right: 0px;">
+              </td>
+            </tr>
+            <tr>
+              <td colspan="6" style="height: 40px; max-height: 40px; text-align: justify; vertical-align: top;">
+                {{ group.notes | replace('\n', '<br>' | safe) }}
+              </td>
+            </tr>
+            {% endif %}
             </tbody>
           </table>
 
@@ -107,6 +118,8 @@
             <table style="page-break-after: always !important;">
             {% elif outer_index != image_groups|length %}
             <table style="page-break-after: always !important;">
+            {% elif outer_index == image_groups|length and group.mimages|length <= 6 %}
+            <!-- do nothing -->
             {% else %}
             <table>
               <tbody>
@@ -121,14 +134,14 @@
 
         {% endfor %}
 
-        {% if group.notes %}
+        {% if group.notes and group.mimages|length % 6 != 0 %}
         <tr>
-          <tr>
-            <td colspan="6" style="border-left: 1px solid white; border-right: 1px solid white;">
-            </td>
-          </tr>
-          <td colspan="6" style="height: 100px; max-height: 100px; text-align: justify; vertical-align: top;">
-            {{ group.notes }}
+          <td colspan="6" style="height: 1px; max-height: 1px; border-left: 0px; border-right: 0px;">
+          </td>
+        </tr>
+        <tr>
+          <td colspan="6" style="height: 40px; max-height: 40px; text-align: justify; vertical-align: top;">
+            {{ group.notes | replace('\n', '<br>' | safe) }}
           </td>
         </tr>
         {% endif %}

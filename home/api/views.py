@@ -35,7 +35,7 @@ class BuildPdfAPIView(APIView):
             if (counter + 1) % 2 == 0:
                 counter += 1
                 data['image_groups'][index]['mimages'].append({'image': None, 'counter': counter})
-            if not group['notes'].strip():
+            if not group['notes'] or not group['notes'].strip():
                 data['image_groups'][index]['notes'] = None
 
         with open('home/report/crash/header.html', 'r') as f:
