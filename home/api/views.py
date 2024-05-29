@@ -9,11 +9,10 @@ from django.http import FileResponse
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from home.api.serializers import CrashReportSerializer
-from rest_framework.decorators import permission_classes
 
 
-@permission_classes([AllowAny])
 class BuildPdfAPIView(APIView):
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         serializer = CrashReportSerializer(data=request.data)
@@ -25,7 +24,6 @@ class BuildPdfAPIView(APIView):
         response = FileResponse(buffer, filename=filename, as_attachment=True)
 
         return FileResponse(response, status=status.HTTP_200_OK)
-
 
     def crash_report(self, data):
         counter = 0
@@ -70,7 +68,6 @@ class BuildPdfAPIView(APIView):
         filename = f'crash-report_{now.date()}.xlsx'
 
         return buffer, filename
-
 
     def correct_image_orientation(self, base64_string):
         try:
