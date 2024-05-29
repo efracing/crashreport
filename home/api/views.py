@@ -7,9 +7,12 @@ from jinja2 import Template
 from rest_framework import status
 from django.http import FileResponse
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 from home.api.serializers import CrashReportSerializer
+from rest_framework.decorators import permission_classes
 
 
+@permission_classes([AllowAny])
 class BuildPdfAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
