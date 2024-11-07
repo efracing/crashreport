@@ -208,7 +208,7 @@
                     title: group.title,
                     notes: group.notes,
                     images: imagesWithInfo
-                      .sort((a, b) => a.filename.localeCompare(b.filename)) // Ordina per filename
+                      .sort((a, b) => a.filename.localeCompare(b.filename, undefined, { numeric: true, sensitivity: 'base' })) // Ordina per filename
                       .map(item => item.base64) // Mantieni solo base64
                   };
                 })
