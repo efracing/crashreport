@@ -198,12 +198,24 @@
           this.loading = true;
           if (this.$refs.form.validate()) {
             try {
-              const imageGroups = await Promise.all(this.form.imageGroups.map(async group => ({
-                title: group.title,
-                notes: group.notes,
-                images: await Promise.all(group.images.map(image => this.compressAndConvertToBase64(image)))
-              })));
-        
+              const imageGroups = await Promise.all(
+                this.form.imageGroups.map(async group => {
+                  const imagesWithInfo = await Promise.all(group.images.map(image => this.compressAndConvertToBase64(image)));
+              
+                  console.log("Images with filename and base64:", imagesWithInfo); // Controlla il contenuto delle immagini con filename e base64
+              
+                  return {
+                    title: group.title,
+                    notes: group.notes,
+                    images: imagesWithInfo
+                      .sort((a, b) => a.filename.localeCompare(b.filename)) // Ordina per filename
+                      .map(item => item.base64) // Mantieni solo base64
+                  };
+                })
+              );
+
+              console.log("Image Groups:", imageGroups);
+
               const eventData = {
                 event: this.form.event,
                 driver: this.form.driver,
@@ -212,7 +224,7 @@
                 sign: this.form.sign,
                 image_groups: imageGroups,
               };
-        
+
               console.log(eventData);
         
               const response = await axios.post('/api/crash/report/', eventData, {
@@ -265,7 +277,7 @@
               success(result) {
                 const reader = new FileReader();
                 reader.readAsDataURL(result);
-                reader.onload = () => resolve(reader.result);
+                reader.onload = () => resolve({ filename: file.name, base64: reader.result });
                 reader.onerror = error => reject(error);
               },
               error(err) {
