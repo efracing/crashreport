@@ -55,7 +55,11 @@
       <thead>
         <tr>
           <td colspan="3">
-            <h1 style="margin: 0px; margin-top: 5px;">- CRASH REPORT #{{ serial }} -</h1>
+            {% if serial %}
+              <h1 style="margin: 0px; margin-top: 5px;">- CRASH REPORT #{{ serial }} -</h1>
+            {% else %}
+              <h1 style="margin: 0px; margin-top: 5px;">- CRASH REPORT -</h1>
+            {% endif %}
           </td>
         </tr>
         <tr>

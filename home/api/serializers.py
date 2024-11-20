@@ -13,4 +13,5 @@ class CrashReportSerializer(serializers.Serializer):
     date = serializers.CharField(max_length=255, allow_blank=True, allow_null=True)
     porsche = serializers.CharField(max_length=255, allow_blank=True, allow_null=True)
     sign = serializers.CharField(max_length=255, allow_blank=True, allow_null=True)
+    save = serializers.BooleanField(required=True)
     image_groups = ImageGroupSerializer(many=True)

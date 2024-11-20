@@ -131,6 +131,13 @@
                     Build PDF
                   </v-btn>
                 </v-col>
+                <v-checkbox
+                  v-model="form.save"
+                  label="SAVE"
+                  color="#f7a40f"
+                  hide-details
+                  :disabled="loading"
+                ></v-checkbox>
                 <v-switch
                   v-model="stream"
                   label="Stream"
@@ -166,6 +173,7 @@
           date: '',
           porsche: '',
           sign: '',
+          save: false,
           imageGroups: [{
             title: '',
             notes: '',
@@ -225,6 +233,7 @@
                 date: this.form.date,
                 porsche: this.form.porsche,
                 sign: this.form.sign,
+                save: this.form.save,
                 image_groups: imageGroups,
               };
 

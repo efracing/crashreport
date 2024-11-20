@@ -20,7 +20,9 @@ class BuildPdfAPIView(APIView):
 
         data = dict(serializer.data)
 
-        data['serial'] = self.create_id(data)
+        if data['save']:
+            data['serial'] = self.create_id(data)
+
         buffer, filename = self.crash_report(data)
         response = FileResponse(buffer, filename=filename, as_attachment=True)
 
