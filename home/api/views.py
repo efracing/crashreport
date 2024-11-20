@@ -1,4 +1,4 @@
-import base64, pdfkit
+import base64, pdfkit, requests, json
 from io import BytesIO
 from datetime import datetime
 from PIL import Image, ExifTags
@@ -20,6 +20,7 @@ class BuildPdfAPIView(APIView):
 
         data = dict(serializer.data)
 
+        data['serial'] = self.create_id(data)
         buffer, filename = self.crash_report(data)
         response = FileResponse(buffer, filename=filename, as_attachment=True)
 
@@ -102,3 +103,31 @@ class BuildPdfAPIView(APIView):
         except Exception as e:
             print(f'Errore nella correzione dell\'immagine: {e}')
             return None
+
+    def create_id(self, data):
+        base_url = 'https://nocodb.enricofulgenzi.app'
+        endpoint = '/api/v2/tables/m7y1x8kebsv6cpt/records'
+
+        headers = {
+            'xc-token': '',
+            'Content-Type': 'application/json'
+        }
+
+        payload = {
+            'EVENT': data['event'],
+            'DRIVER': data['driver'],
+            'DATE': data['date'],
+            'PORSCHE': data['porsche'],
+            'SIGN': data['sign'],
+        }
+
+        response = requests.post(f'{base_url}{endpoint}', headers=headers, data=json.dumps(payload))
+
+        if response.status_code == 200 or response.status_code == 201:
+            response_data = response.json()
+            record_id = response_data.get('Id')
+            return record_id
+
+        print(f'Error: {response.status_code}')
+        print(response.text)
+        return -1
