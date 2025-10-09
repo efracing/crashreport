@@ -1,4 +1,7 @@
-import base64, pdfkit, requests, json
+import base64
+import pdfkit
+import requests
+import json
 from io import BytesIO
 from datetime import datetime
 from PIL import Image, ExifTags
@@ -28,17 +31,23 @@ class BuildPdfAPIView(APIView):
         buffer, filename = self.crash_report(data)
         return FileResponse(buffer, filename=filename, as_attachment=True, status=status.HTTP_200_OK)
 
-
     def crash_report(self, data, record_id=None):
         counter = 0
         for index, group in enumerate(data['image_groups']):
             data['image_groups'][index]['mimages'] = []
-            for img in group['images']:
+            for img_obj in group['images']:
                 counter += 1
-                data['image_groups'][index]['mimages'].append({'image': img, 'counter': counter})
+                base64_str = img_obj.get('base64')
+                filename = img_obj.get('filename', f'image_{counter}.jpg')
+                data['image_groups'][index]['mimages'].append({
+                    'image': base64_str,
+                    'filename': filename,
+                    'counter': counter
+                })
             if (counter + 1) % 2 == 0:
                 counter += 1
-                data['image_groups'][index]['mimages'].append({'image': None, 'counter': counter})
+                data['image_groups'][index]['mimages'].append(
+                    {'image': None, 'filename': None, 'counter': counter})
             if not group['notes'] or not group['notes'].strip():
                 data['image_groups'][index]['notes'] = None
 
@@ -71,13 +80,12 @@ class BuildPdfAPIView(APIView):
 
         return buffer, filename
 
-
     def correct_image_orientation(self, base64_string):
         try:
             # Decodifica la stringa base64
             image_data = base64.b64decode(base64_string)
             image = Image.open(BytesIO(image_data))
-            
+
             # Estrarre i metadati EXIF
             exif = image._getexif()
             if exif is not None:
@@ -93,13 +101,14 @@ class BuildPdfAPIView(APIView):
                         elif orientation == 8:
                             image = image.rotate(90, expand=True)
                         break
-            
+
             # Salva l'immagine corretta in un oggetto BytesIO
             buffered = BytesIO()
             image.save(buffered, format=image.format)
-            
+
             # Converti l'immagine corretta in una stringa base64
-            corrected_base64_string = base64.b64encode(buffered.getvalue()).decode('utf-8')
+            corrected_base64_string = base64.b64encode(
+                buffered.getvalue()).decode('utf-8')
             return corrected_base64_string
 
         except Exception as e:
@@ -123,7 +132,8 @@ class BuildPdfAPIView(APIView):
             'SIGN': data['sign'],
         }
 
-        response = requests.post(f'{base_url}{endpoint}', headers=headers, data=json.dumps(payload))
+        response = requests.post(
+            f'{base_url}{endpoint}', headers=headers, data=json.dumps(payload))
 
         if response.status_code == 200 or response.status_code == 201:
             response_data = response.json()

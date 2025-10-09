@@ -219,10 +219,7 @@
                     title: group.title,
                     notes: group.notes,
                     images: imagesWithInfo
-                      .sort((a, b) =>
-                        a.filename.localeCompare(b.filename, undefined, { numeric: true, sensitivity: 'base' })
-                      )
-                      .map(item => item.base64),
+                      .sort((a, b) => a.filename.localeCompare(b.filename, undefined, { numeric: true, sensitivity: 'base' })),
                   };
                 })
               );

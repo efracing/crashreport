@@ -77,20 +77,22 @@
 
           <tr>
             {% if not group.mimages[i].image %}
-              <td colspan="3" style="width: 50%; height: 245px; max-height: 245px; border-color: white;">
+              <td colspan="3" style="width: 50%; height: 220px; max-height: 220px; border-color: white;">
               </td>
             {% else %}
-              <td colspan="3" style="width: 50%; height: 245px; max-height: 245px;">
+              <td colspan="3" style="width: 50%; height: 220px; max-height: 220px;">
                 <img style="max-width: 100%; max-height: 100%; height: auto;" src="{{ group.mimages[i].image }}">
+                <p style="margin: 0px; padding: 0px; margin-top: 1px;">{{ group.mimages[i].filename }}</p>
               </td>
             {% endif %}
 
             {% if not group.mimages[i+1].image %}
-              <td colspan="3" style="width: 50%; height: 245px; max-height: 245px; border-color: white;">
+              <td colspan="3" style="width: 50%; height: 220px; max-height: 220px; border-color: white;">
               </td>
             {% else %}
-              <td colspan="3" style="width: 50%; height: 245px; max-height: 245px;">
+              <td colspan="3" style="width: 50%; height: 220px; max-height: 220px;">
                 <img style="max-width: 100%; max-height: 100%; height: auto;" src="{{ group.mimages[i+1].image }}">
+                <p style="margin: 0px; padding: 0px; margin-top: 1px;">{{ group.mimages[i+1].filename }}</p>
               </td>
             {% endif %}
           </tr>
