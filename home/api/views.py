@@ -20,20 +20,20 @@ class BuildPdfAPIView(APIView):
 
         data = dict(serializer.data)
 
-        if data['save']:
-            data['serial'] = self.create_id(data)
+        record_id = None
+        if data.get('save'):
+            record_id = self.create_id(data)
+            data['serial'] = record_id
 
         buffer, filename = self.crash_report(data)
-        response = FileResponse(buffer, filename=filename, as_attachment=True)
+        return FileResponse(buffer, filename=filename, as_attachment=True, status=status.HTTP_200_OK)
 
-        return FileResponse(response, status=status.HTTP_200_OK)
 
-    def crash_report(self, data):
+    def crash_report(self, data, record_id=None):
         counter = 0
         for index, group in enumerate(data['image_groups']):
             data['image_groups'][index]['mimages'] = []
             for img in group['images']:
-                # base64img = self.correct_image_orientation(img)
                 counter += 1
                 data['image_groups'][index]['mimages'].append({'image': img, 'counter': counter})
             if (counter + 1) % 2 == 0:
@@ -43,18 +43,14 @@ class BuildPdfAPIView(APIView):
                 data['image_groups'][index]['notes'] = None
 
         with open('home/report/crash/header.html', 'r') as f:
-            content = f.read()
-        template = Template(content)
-        content = template.render(data)
+            header_content = Template(f.read()).render(data)
         with open('home/report/crash/head.html', 'w') as f:
-            f.write(content)
+            f.write(header_content)
 
         with open('home/report/crash/template.html', 'r') as f:
-            content = f.read()
-        template = Template(content)
-        content = template.render(data)
+            body_content = Template(f.read()).render(data)
         with open('home/report/crash/temp.html', 'w') as f:
-            f.write(content)
+            f.write(body_content)
 
         options = {
             'page-size': 'A4',
@@ -62,15 +58,19 @@ class BuildPdfAPIView(APIView):
             'footer-html': 'home/report/crash/footer.html',
             'enable-local-file-access': '',
         }
-        pdf = pdfkit.from_string(content, options=options)
+        pdf = pdfkit.from_string(body_content, options=options)
 
         buffer = BytesIO(pdf)
         buffer.seek(0)
 
-        now = datetime.now()
-        filename = f'crash-report_{now.date()}.xlsx'
+        if record_id and record_id != -1:
+            filename = f'CRASH-REPORT_{record_id}.pdf'
+        else:
+            now = datetime.now().strftime('%Y%m%d-%H%M')
+            filename = f'CRASH-REPORT_{now}.pdf'
 
         return buffer, filename
+
 
     def correct_image_orientation(self, base64_string):
         try:

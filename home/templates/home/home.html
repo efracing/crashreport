@@ -211,21 +211,21 @@
             try {
               const imageGroups = await Promise.all(
                 this.form.imageGroups.map(async group => {
-                  const imagesWithInfo = await Promise.all(group.images.map(image => this.compressAndConvertToBase64(image)));
-              
-                  console.log("Images with filename and base64:", imagesWithInfo); // Controlla il contenuto delle immagini con filename e base64
-              
+                  const imagesWithInfo = await Promise.all(
+                    group.images.map(image => this.compressAndConvertToBase64(image))
+                  );
+
                   return {
                     title: group.title,
                     notes: group.notes,
                     images: imagesWithInfo
-                      .sort((a, b) => a.filename.localeCompare(b.filename, undefined, { numeric: true, sensitivity: 'base' })) // Ordina per filename
-                      .map(item => item.base64) // Mantieni solo base64
+                      .sort((a, b) =>
+                        a.filename.localeCompare(b.filename, undefined, { numeric: true, sensitivity: 'base' })
+                      )
+                      .map(item => item.base64),
                   };
                 })
               );
-
-              console.log("Image Groups:", imageGroups);
 
               const eventData = {
                 event: this.form.event,
@@ -237,34 +237,39 @@
                 image_groups: imageGroups,
               };
 
-              console.log(eventData);
-        
+              console.log("Event Data:", eventData);
+
               const response = await axios.post('/api/crash/report/', eventData, {
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                // Set responseType to 'blob' to receive binary data
-                responseType: 'blob'
+                headers: { 'Content-Type': 'application/json' },
+                responseType: 'blob', // per ricevere PDF binario
               });
-        
-              // Create a Blob object from the binary data received
+
+              // 🔍 Estrai il nome del file dagli header
+              const disposition = response.headers['content-disposition'];
+              let filename = 'crash-report.pdf';
+              if (disposition && disposition.includes('filename=')) {
+                filename = disposition
+                  .split('filename=')[1]
+                  .split(';')[0]
+                  .trim()
+                  .replace(/"/g, '');
+              }
+
+              // Crea un URL temporaneo dal blob
               const blob = new Blob([response.data], { type: 'application/pdf' });
-        
-              // Create a temporary URL for the Blob object
               const url = window.URL.createObjectURL(blob);
 
               if (!this.stream) {
-                // Create a link element and trigger a download
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = `${this.form.event},${this.form.driver},${this.form.date},${this.form.porsche},${this.form.sign}.pdf`;
+                link.download = filename; // ✅ nome dal backend
                 document.body.appendChild(link);
                 link.click();
+                link.remove();
               } else {
-                // Open the PDF in a new tab/window
                 window.open(url, '_blank');
               }
-        
+
               // Cleanup
               window.URL.revokeObjectURL(url);
 
@@ -281,7 +286,7 @@
               this.loading = false;
             }
           }
-        },        
+        },
         compressAndConvertToBase64(file) {
           return new Promise((resolve, reject) => {
             new Compressor(file, {
