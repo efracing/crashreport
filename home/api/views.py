@@ -28,7 +28,7 @@ class BuildPdfAPIView(APIView):
             record_id = self.create_id(data)
             data['serial'] = record_id
 
-        buffer, filename = self.crash_report(data)
+        buffer, filename = self.crash_report(data, record_id)
         return FileResponse(buffer, filename=filename, as_attachment=True, status=status.HTTP_200_OK)
 
     def crash_report(self, data, record_id=None):
@@ -120,7 +120,7 @@ class BuildPdfAPIView(APIView):
         endpoint = '/api/v2/tables/m7y1x8kebsv6cpt/records'
 
         headers = {
-            'xc-token': '',
+            'xc-token': 'ZFhtrn7C2JftsMFcgscaenS1VQ3lkS7TjacBVVP-',
             'Content-Type': 'application/json'
         }
 
