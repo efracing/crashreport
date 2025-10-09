@@ -120,7 +120,7 @@ class BuildPdfAPIView(APIView):
         endpoint = '/api/v2/tables/m7y1x8kebsv6cpt/records'
 
         headers = {
-            'xc-token': 'ZFhtrn7C2JftsMFcgscaenS1VQ3lkS7TjacBVVP-',
+            'xc-token': '',
             'Content-Type': 'application/json'
         }
 
