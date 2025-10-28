@@ -73,7 +73,7 @@ class BuildPdfAPIView(APIView):
         buffer.seek(0)
 
         if record_id and record_id != -1:
-            filename = f'CRASH-REPORT_{record_id}.pdf'
+            filename = f'CRASH-REPORT_#{record_id}.pdf'
         else:
             now = datetime.now().strftime('%Y%m%d-%H%M')
             filename = f'CRASH-REPORT_{now}.pdf'
